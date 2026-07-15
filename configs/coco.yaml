@@ -1,0 +1,62 @@
+name: latent-diffusion
+
+seed: 42
+
+device: cuda
+
+dataset:
+  name: coco_captions
+  img_size: 256
+  root: data/
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+
+autoencoder:
+  name: stabilityai/sd-vae-ft-mse
+  latent_channels: 4
+  latent_size: 32
+  scaling_factor: 0.18215
+
+text_encoder:
+  name: openai/clip-vit-large-patch14
+  padding: max_length
+  max_length: 77
+  truncation: true
+  return_tensor: pt
+
+model:
+  input_dim: 128
+  channels: 4
+  num_classes: 10
+  groupnorm_groups: 32
+  dimension_multiplier: [1, 2, 4, 4]
+  attention_config: ['none', 'cross', 'self_cross', 'self_cross']
+  context_dim: 768
+
+training:
+  epochs: 1200
+  optimizer: adamw
+  learning_rate: 0.0001
+  ema_decay: 0.999
+  save_dir: checkpoints/
+  save_every: 200
+  resume_from: null
+  use_snr: true
+  snr_gamma: 5
+
+diffusion:
+  timesteps: 1000
+  schedule: cosine
+  prediction_type: v
+
+cfg:
+  dropout: 0.2
+  guidance_scale: 5
+
+sampling:
+  sample_every: 100
+  sampler: ddpm
+  sampling_timesteps: 100
+  prompts: ['a motorcycle', 'a dog', 'a pizza', 'a car', 'an airplane']
+  eta: 0.8
