@@ -14,6 +14,7 @@ class FrozenVAE(nn.Module):
     for param in self.vae.parameters():
       if param.requires_grad:
         param.requires_grad = False
+    # Alternative is `self.vae.requires_grad_(False)`
     
     self.vae.eval()
 
