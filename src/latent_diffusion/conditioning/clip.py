@@ -19,7 +19,7 @@ class FrozenCLIP(nn.Module):
 
         self.encoder.eval()
 
-    @torch.no_grad()
+    @torch.inference_mode()
     def encode(self, prompts: str | list[str]):
         """
         Takes a prompt or a list of prompts, turning that into tokens and then into embeddings.
