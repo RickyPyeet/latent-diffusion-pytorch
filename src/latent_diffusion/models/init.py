@@ -1,4 +1,3 @@
-
 import torch
 from torch import nn
 # Helper function to initialize weights and bias in a new conv block
