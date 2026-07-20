@@ -18,7 +18,7 @@ class FrozenVAE(nn.Module):
     
     self.vae.eval()
 
-  @torch.no_grad()
+  @torch.inference_mode()
   def encode(self, image: torch.Tensor):
     """
     Encodes an image tensor into a latent representation automatically scaled by the VAE's scaling factor
@@ -32,7 +32,7 @@ class FrozenVAE(nn.Module):
     latents = latents * self.vae.config.scaling_factor
     return latents
 
-  @torch.no_grad()
+  @torch.inference_mode()
   def decode(self, latent: torch.Tensor):
     """
     Decodes a latent into an image tensor automatically de-scaled by the VAE's scaling factor
