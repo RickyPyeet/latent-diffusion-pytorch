@@ -8,14 +8,14 @@ dataset:
   name: coco_captions
   img_size: 256
   root: data/
-  cached_root: ""
+  cached_root: data/coco_latents
   batch_size: 128
   num_workers: 8
   pin_memory: true
   shuffle: true
 
 autoencoder:
-  name: stabilityai/sd-vae-ft-mse
+  vae_name: stabilityai/sd-vae-ft-mse
   latent_channels: 4
   latent_size: 32
   scaling_factor: 0.18215
@@ -30,7 +30,6 @@ text_encoder:
 model:
   input_dim: 128
   channels: 4
-  num_classes: 10
   groupnorm_groups: 32
   dimension_multiplier: [1, 2, 4, 4]
   attention_config: ['none', 'cross', 'self_cross', 'self_cross']
