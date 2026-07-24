@@ -9,7 +9,7 @@ from src.latent_diffusion.data.coco import build_coco_trainval_dataset, get_coll
 from src.latent_diffusion.autoencoder.vae import FrozenVAE
 
 def parse_args():
-    parser = argprase.ArgumentParser()
+    parser = argparse.ArgumentParser()
 
     parser.add_argument('--data_dir', type = Path, required = True, help = 'Path to the COCO dataset directory')
     parser.add_argument('--output_dir', type = Path, required = True, help ='Directory where cached latents are saved')
@@ -35,7 +35,7 @@ def main():
                             batch_size = args.batch_size,
                             shuffle = False,
                             num_workers = args.num_workers,
-                            pin_memory = device.startswith('cuda'),
+                            pin_memory = args.device.startswith('cuda'),
                             collate_fn = get_collate_function())
 
     vae = FrozenVAE(args.vae_model)
