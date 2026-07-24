@@ -25,10 +25,18 @@ def generate_and_plot(model,
   """
   Generate samples using DDPM or DDIM and plot them as a grid
   """
+  model.eval()
+  
   if seed is not None:
     torch.manual_seed(seed)
     if torch.cuda.is_available():
       torch.cuda.manual_seed(seed)
+
+  if isinstance(prompt, str):
+    prompt = [prompt]
+
+  if len(prompt) != img_shape[0]:
+    raise ValueError(f"The number of prompts must match the number of batches img_shape[0]")
    
   if sampler == 'ddpm':
     samples, steps = sample_ddpm(model = model,
