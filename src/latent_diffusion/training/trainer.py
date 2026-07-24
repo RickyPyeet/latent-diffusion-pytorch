@@ -1,4 +1,3 @@
-import random
 import torch
 from torch import nn
 from tqdm.auto import tqdm
@@ -30,7 +29,7 @@ def create_optimizer(model, optim_type, lr):
   return optimizer
 
 def trainer(model: nn.Module,
-            cached_vae_dataloader,
+            latent_dataloader,
             epochs,
             device,
             vae,
@@ -62,7 +61,9 @@ def trainer(model: nn.Module,
 
   model = model.to(device)
   clip = clip.to(device)
+  clip.eval()
   vae = vae.to(device)
+  vae.eval()
 
   # Make example prompts if not passed
   if example_prompts is None:
@@ -117,9 +118,9 @@ def trainer(model: nn.Module,
     model.train()
     train_loss = 0.0
 
-    for i, batch in enumerate(cached_vae_dataloader):
+    for i, batch in enumerate(latent_dataloader):
       latents = batch['latents']
-      prompts = batch['prompts']
+      prompts = batch['captions']
 
       latents = latents.to(device)
 
@@ -135,10 +136,7 @@ def trainer(model: nn.Module,
 
       ### Drop Mask for CFG
       drop_mask = (torch.rand(batch_size, device = device) < class_free_dropout).tolist()
-      c_input = [random.choice(p) if isinstance(p, (list, tuple)) else p for p in prompts]
-      for i in range(batch_size):
-        if drop_mask[i]:
-          c_input[i] = "" # null token is identified with ''
+      c_input = ["" if should_drop else caption for caption, should_drop in zip(prompts, drop_mask)] # null token is identified with ""
 
       ### CLIP EMBEDDING
       text_embeddings = clip.encode(c_input)
@@ -167,7 +165,7 @@ def trainer(model: nn.Module,
 
       train_loss += loss.item()
 
-    train_loss /= len(cached_vae_dataloader)
+    train_loss /= len(latent_dataloader)
     loss_hist.append(train_loss)
 
     print(f"Training Loss: {train_loss:.5f}\n")
