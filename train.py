@@ -54,7 +54,7 @@ def main():
                                     save_every=config['training']['save_every'],
                                     resume_from=config['training']['resume_from'],
                                     sample_every=config['sampling']['sample_every'],
-                                    example_prompts=config['sampling']['labels'],
+                                    example_prompts=config['sampling']['prompts'],
                                     sampler=config['sampling']['sampler'],
                                     sample_timesteps=config['sampling']['sampling_timesteps'],
                                     use_snr = config['training']['use_snr'],
